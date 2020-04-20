@@ -1,0 +1,106 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Streaming</title>
+</head>
+
+<body>
+	<video id="camera1"></video>
+	<canvas id="canvas1" width="680" height="420"></canvas>
+
+	<video id="camera2"></video>
+	<canvas id="canvas2" width="680" height="420"></canvas>
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		(function (d, w, n, io) {
+			var io = io();
+			var startCamera1 = false, startCamera2 = false;
+			var camera1 = d.querySelector('#camera1'), camera2 = d.querySelector('#camera2');
+			var canvas1 = d.querySelector('#canvas1'), canvas2 = d.querySelector('#canvas2');
+			var context1 = canvas1.getContext('2d'), context2 = canvas2.getContext('2d');
+
+			n.streaming = (
+				n.getUserMedia ||
+				n.webkitGetUserMedia ||
+				n.mozGetUserMedia ||
+				n.msGetUserMedia
+			)
+
+			e = 1;
+			n.mediaDevices.enumerateDevices().then(function (devices) {
+				devices.forEach(function (device) {
+					if (device.kind == 'videoinput') {
+						if (e == 1) {
+							n.streaming({
+								video: {
+									deviceId: {
+										exact: device.deviceId
+									}
+								},
+								audio: false
+							}, function (stream) {
+								startCamera1 = true
+								camera1.srcObject = stream;
+								camera1.play();
+							}, function (err) {
+								alert('error al acceder a la camara web: ' + err)
+							})
+						} else if (e == 2) {
+							n.streaming({
+								video: {
+									deviceId: {
+										exact: device.deviceId
+									}
+								},
+								audio: false
+							}, function (stream) {
+								startCamera2 = true
+								camera2.srcObject = stream;
+								camera2.play();
+							}, function (err) {
+								alert('error al acceder a la camara web: ' + err)
+							})
+						}
+						e++;
+					}
+				})
+			})
+
+			w.playVideo = (function (cb) {
+				return w.requestAnimationFrame ||
+					w.webkitRequestAnimationFrame ||
+					w.mozRequestAnimationFrame ||
+					w.msRequestAnimationFrame ||
+					function (cb) {
+						w.setTimeout(cb, 1000 / 15)
+					}
+			})()
+
+			function streamVideo(context, canvas, video, number) {
+				var outputStream = canvas.toDataURL('image/jpeg', .2)
+				context.drawImage(video, 0, 0)
+
+				if (startCamera1 && startCamera2) {
+					io.emit('streaming' + number, outputStream)
+				}
+
+				playVideo(function () {
+					streamVideo(context, canvas, video, number)
+				})
+			}
+
+			w.addEventListener('load', function () {
+				camera1.autoplay = true
+				camera1.style.display = 'none'
+				camera2.autoplay = true
+				camera2.style.display = 'none'
+				streamVideo(context1, canvas1, camera1, 1)
+				streamVideo(context2, canvas2, camera2, 2)
+			})
+		})(document, window, navigator, io)
+	</script>
+</body>
+
+</html>

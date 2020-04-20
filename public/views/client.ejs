@@ -1,0 +1,112 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>PRUEBA FREE</title>
+	<%include partials/head%>
+</head>
+
+<body>
+
+	<!-- ======= Top Bar ======= -->
+
+	<% if(!admin) { %>
+	<section id="topbar" class="d-none d-lg-block">
+		<div class="container d-flex">
+			<div class="contact-info mr-auto">
+				<i class="fas fa-user"></i> <a href="">¡Hola! Estas en modo prueba, disfruta nuestra calidad de
+					video.</a>
+				<i class="icofont-phone"></i> <a href="/" class="inicio-client">Regresar al inicio</a>
+			</div>
+		</div>
+	</section>
+	<% }else{ %>
+	<section id="topbar" class="d-none d-lg-block">
+		<div class="container d-flex">
+			<div class="contact-info mr-auto">
+				<i class="fas fa-user"></i>
+				¡Hola! Gracias por registrarte, podrás ver las cámaras el tiempo
+				que gustes.
+			</div>
+		</div>
+	</section>
+	<% } %>
+
+	<!-- ======= Header ======= -->
+	<header id="header" class="header-client">
+		<div class="container d-flex responsive-cli">
+			<div class="logo mr-auto">
+				<h1 class="text-light"><a href="/" class="all-sec"><img src="../img/1.png" alt=""> ALL SEC</a></h1>
+			</div>
+
+			<nav class="nav-menu d-none d-lg-block">
+				<ul>
+					<% if(admin){ %>
+					<li class="active">
+						<p><%=email%> puedes ver las cámaras de tu casa</p>
+					</li>
+					</li class="active">
+					<li><a class="btn btn-primary btn-xl js-scroll-trigger" href="/">Cerrar sesión</a></li>
+					<% }else{ %>
+					<li>
+						<p> Aquí puedes ver las cámaras de tu casa</p>
+					</li>
+					<% } %>
+
+				</ul>
+			</nav><!-- .nav-menu -->
+		</div>
+	</header><!-- End Header -->
+
+
+	<section class="section-cli1">
+		<div class="container d-flex reposncon">
+
+			<div class="camera-free">
+				<h3 class="p-2 tile-camera spacie">CAMARA 1 <br> &#8212;</h3>
+				<img id="streaming1" class="webcam" src="../img/fondo.jpg">
+
+			</div>
+
+			<div class="camera-free">
+				<h3 class="p-2 tile-camera">CAMARA 2 <br> &#8212;</h3>
+				<img id="streaming2" class="webcam" src="../img/fondo.jpg">
+			</div>
+
+		</div>
+
+
+	</section>
+	<!-- ======= footer======= -->
+	<%include partials/footer %>
+
+	<script src="socket.io/socket.io.js"></script>
+	<script>
+		(function (d, io) {
+			var io = io()
+
+			io.on('play stream1', function (image) {
+				d.querySelector('#streaming1').src = image
+			})
+
+			io.on('play stream2', function (image) {
+				d.querySelector('#streaming2').src = image
+			})
+
+			var admin = <%= admin %>
+
+			if (!admin) {
+				setInterval(function () {
+					window.location.href = '/'
+				}, 1000 * 15)
+			}
+		})(document, io)
+	</script>
+
+	<!-- ======= footer======= -->
+	<a href="#" class="back-to-top"><i class="fas fa-arrow-up""></i></a>
+</body>
+
+</html>

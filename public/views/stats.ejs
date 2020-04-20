@@ -1,0 +1,87 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>GRÁFICO - ALL SEC</title>
+    <%include partials/head %>
+  </head>
+
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <%include partials/navegation %>
+    <header class="masthead">
+      <div class="container h-100">
+        <div
+          class="row h-100 align-items-center justify-content-center text-center"
+        >
+          <div class="col-lg-10 align-self-end">
+            <h1
+              class="text-uppercase text-white font-weight-bold title-one animated bounce"
+            >
+              Security Home
+            </h1>
+            <hr class="divider my-4" />
+          </div>
+          <div class="col-lg-8 align-self-baseline">
+            <p class="text-white font-weight-light mb-5 text-info">
+              REALIZA UNA PRUEBA GRATIS <br />
+              ¡A H O R A!
+            </p>
+            <a
+              class="btn btn-primary btn-xl js-scroll-trigger animated heartbeat infinite"
+              href="/client"
+              >PRUEBA GRATIS</a
+            >
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="m5 text-center bg-light">
+      <div class="conteiner">
+        <canvas id="visitors"></canvas>
+      </div>
+    </section>
+    <script>
+      var jsonVisitors = <%- JSON.stringify(data) %>;
+      var labels = jsonVisitors.map(function (e) {
+          return e.country_code;
+      })
+      var data = jsonVisitors.map(function (e) {
+          return e.user_count;
+      })
+
+      var ctx = document.getElementById('visitors').getContext('2d');
+      var visitChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: this.labels,
+              datasets: [{
+                  label: 'Número de visitantes',
+                  data: this.data,
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(255, 99, 132, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(255, 99, 132, 0.2)'
+                  ],
+                  borderWidth: 1
+              }],
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  }
+              }
+          }
+      })
+    </script>
+    <%include partials/footer %>
+  </body>
+</html>
