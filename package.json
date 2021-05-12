@@ -22,7 +22,7 @@
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "node-iplocate": "^1.0.1",
-    "nodemailer": "^6.4.6",
+    "nodemailer": "^6.4.16",
     "pug-cli": "^1.0.0-alpha6",
     "socket.io": "^2.3.0",
     "util.promisify": "^1.0.1"
